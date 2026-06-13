@@ -1,0 +1,8 @@
+{
+  "name": "stock-journal-api",
+  "version": "1.0.0",
+  "description": "Stock Journal sync API",
+  "dependencies": {
+    "@vercel/kv": "^1.0.0"
+  }
+}
