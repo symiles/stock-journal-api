@@ -3,19 +3,28 @@ const DATA_KEY = 'journal_data';
 
 async function kvGet(key) {
   try {
-    const { Redis } = await import('@upstash/redis');
-    const redis = Redis.fromEnv();
-    return await redis.get(key);
+    const url = process.env.KV_REST_API_URL;
+    const token = process.env.KV_REST_API_TOKEN;
+    const res = await fetch(`${url}/get/${key}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    return data.result ? JSON.parse(data.result) : null;
   } catch (e) {
+    console.error('KV get error:', e);
     return null;
   }
 }
 
 async function kvSet(key, value) {
   try {
-    const { Redis } = await import('@upstash/redis');
-    const redis = Redis.fromEnv();
-    await redis.set(key, value);
+    const url = process.env.KV_REST_API_URL;
+    const token = process.env.KV_REST_API_TOKEN;
+    await fetch(`${url}/set/${key}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(JSON.stringify(value))
+    });
   } catch (e) {
     console.error('KV set error:', e);
   }
