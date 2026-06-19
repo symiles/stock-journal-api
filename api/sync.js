@@ -81,7 +81,14 @@ export default async function handler(req, res) {
     const data = await kvGet(DATA_KEY) || emptyData();
     return res.status(200).json({ status: 'ok', data: JSON.stringify(data) });
   }
-
+  
+  if (action === 'replace') {
+    const incoming = req.body?.payload;
+    if (!incoming) return res.status(400).json({ status: 'error', message: 'No payload' });
+    await kvSet(DATA_KEY, incoming);
+    return res.status(200).json({ status: 'ok' });
+  }
+  
   if (action === 'push') {
     const incoming = req.body?.payload;
     if (!incoming) return res.status(400).json({ status: 'error', message: 'No payload' });
